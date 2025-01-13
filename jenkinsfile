@@ -1,0 +1,47 @@
+pipeline{
+  agent any 
+  //tools{}
+  environment{
+    def COHORT_ID = '16'
+    def hyperscaler = 'aws'
+  }
+  
+  stages{
+    stage('Test local variables') {
+      steps{
+        timeout(time: 5, unit: 'MINUTES') {
+          input message: "Do you want to continue?"
+        }
+        sh "printenv"
+        echo "${env.HOSTNAME}"
+        echo "$env.JENKINS_VERSION"
+        echo "${BUILD_NUMBER}"
+        echo "$JENKINS_URL"
+        echo 'View all local variables on jenkins'
+        echo "View all local variables as out cohort id is $COHORT_ID"
+ 
+      }
+    }
+    stage('Test Enviromental Variables') {
+      environment{
+        COHORT_ID = '17'
+      }
+      steps{
+        echo 'View all local variables on jenkins'
+        echo "View all local variables as out cohort id is $COHORT_ID"
+        echo "View all local environments as out cohort hyperscaler will be $hyperscaler"
+ 
+      }
+    }
+    stage('Test Enviromental Variable switch') {
+      environment{
+        hyperscaler = 'azure'
+      }
+      steps{
+        echo 'View all local variables on jenkins'
+        echo "next cohort hyperscaler will be $hyperscaler"
+ 
+      }
+    }
+  }
+}
